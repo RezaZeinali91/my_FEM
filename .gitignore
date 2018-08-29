@@ -1,0 +1,8 @@
+__pycache__/
+/.coverage
+/build/
+/dist/
+/nutils.egg-info/
+/.eggs/
+/docs/examples/
+/docs/nutils/

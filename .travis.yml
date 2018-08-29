@@ -1,0 +1,27 @@
+language: python
+sudo: false
+env:
+  global:
+    - OMP_NUM_THREADS=1
+    - VECLIB_MAXIMUM_THREADS=1
+matrix:
+  include:
+    - os: linux
+      python: "3.5"
+    - os: linux
+      python: "3.6"
+    - os: linux
+      python: "3.6"
+      env: FORCE_PYTHON_PKGS=numpy==1.12
+    - os: osx
+      language: generic
+      env: PYTHON_PKG_URL=https://www.python.org/ftp/python/3.6.4/python-3.6.4-macosx10.6.pkg
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget -O python.pkg "$PYTHON_PKG_URL"; sudo installer -pkg python.pkg -target /; rm python.pkg; fi
+install:
+  - python3 -m pip install --upgrade .[test,mkl] coverage coveralls $FORCE_PYTHON_PKGS
+script:
+  - LD_LIBRARY_PATH="$VIRTUAL_ENV/lib" DYLD_LIBRARY_PATH="$VIRTUAL_ENV/lib" python3 -m coverage run -m unittest -b
+after_success:
+  - python3 -c 'import coveralls.cli; coveralls.cli.main()'
+# vim: ts=2:sts=2:sw=2:et
